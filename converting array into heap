@@ -1,0 +1,74 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using std::vector;
+using std::cin;
+using std::cout;
+using std::swap;
+using std::pair;
+using std::make_pair;
+
+class HeapBuilder {
+ private:
+  vector<int> data_;      // long long data type is more preferable , but as int is given, i did not change 
+  vector< pair<int,int> > swaps_;
+
+  void WriteResponse() const {
+    cout << swaps_.size() << "\n";
+    for (int i = 0; i < swaps_.size(); ++i) {
+      cout << swaps_[i].first << " " << swaps_[i].second << "\n";
+    }
+  }
+
+  void ReadData() {
+    int n;
+    cin >> n;
+    data_.resize(n);
+    for(int i = 0; i < n; ++i)
+      cin >> data_[i];
+  }
+// function  for clearity
+void minHeap(int i,int size){
+     int l,r;
+        l=2*i+1;   //left pos for end  of sub-vector
+        r=2*i+2;   //right pos for begining of sub-vector
+        int smallest=i;    //initizalize index
+        if(l < size && data_[l] < data_[i])      //as in sorting methods, finding index of min element
+        {
+            smallest=l;      
+        }
+        
+        if(r < size && data_[r] < data_[smallest])
+        {
+            smallest=r;
+        }
+        if(smallest != i){                    // if the index changed
+            swap(data_[i],data_[smallest]);    //swap elements
+             swaps_.push_back(make_pair(i, smallest));      //storing the index of swapped elements 
+            minHeap(smallest,size);   //recursively calling function
+        }
+}
+  void GenerateSwaps() {
+    swaps_.clear();
+    for(int i=data_.size()/2-1; i>=0;i--){
+        minHeap(i,data_.size());
+
+    }
+
+  }
+
+ public:
+  void Solve() {
+    ReadData();
+    GenerateSwaps();
+    WriteResponse();
+  }
+};
+
+int main() {
+  std::ios_base::sync_with_stdio(false);
+  HeapBuilder heap_builder;
+  heap_builder.Solve();
+  return 0;
+}
